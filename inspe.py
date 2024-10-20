@@ -18,6 +18,16 @@ def introspection_info(obj):
         other_properties['doc'] = obj.__doc__
     if hasattr(obj, '__class__'):
         other_properties['class'] = obj.__class__.__name__
+    if hasattr(obj, '__dict__'): # Для объектов с атрибутами
+        other_properties['instance_variables'] = obj.__dict__
+    if hasattr(obj, '__name__'): # Для функций и классов
+        other_properties['name'] = obj.__name__
+    if hasattr(obj, '__qualname__'): # Для функций и классов
+        other_properties['qualname'] = obj.__qualname__
+
+    # Классовая иерархия (для классов)
+    if inspect.isclass(obj):
+        other_properties['class_hierarchy'] = inspect.getmro(obj)
 
     # Собираем все данные в словарь
     info = {
@@ -39,3 +49,15 @@ print(class_info)
 
 list_info = introspection_info([1, 2, 3])
 print(list_info)
+
+# Cвой класс и объект для понимания.
+class CustomClass:
+    def __init__(self, name):
+        self.name = name
+
+    def greet(self):
+        return f"Hello, {self.name}!"
+
+custom_obj = CustomClass("John")
+custom_obj_info = introspection_info(custom_obj)
+print(custom_obj_info)
